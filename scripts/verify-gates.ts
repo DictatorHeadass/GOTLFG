@@ -56,6 +56,7 @@ async function makeUser(label: string, age: number) {
     data: {
       name: `${TAG}-${label}`,
       discordName: `${TAG}_${label}`,
+      questName: `${TAG}q_${label}`,
       birthDate: yearsAgo(age),
       onboardedAt: new Date(),
       region: "na-east",
@@ -167,8 +168,37 @@ async function main() {
     !asOutsider.includes(`${TAG}_adult`),
   );
 
+  check("non-member payload contains no questName key", !asOutsider.includes("questName"));
+  check("non-member payload contains no Quest name value", !asOutsider.includes(`${TAG}q_adult`));
+
   const anonymous = await (await api(`/api/groups/${group.id}`, null)).text();
   check("signed-out payload contains no discordName key", !anonymous.includes("discordName"));
+  check("signed-out payload contains no questName key", !anonymous.includes("questName"));
+
+  // --- Lobby chat is squad-only, in both directions ----------------------
+  const readAsOutsider = await api(`/api/groups/${group.id}/messages`, outsider.cookie);
+  check(
+    "non-member cannot read the lobby",
+    readAsOutsider.status === 403,
+    `got ${readAsOutsider.status}`,
+  );
+
+  const writeAsOutsider = await api(`/api/groups/${group.id}/messages`, outsider.cookie, {
+    method: "POST",
+    body: JSON.stringify({ body: "let me in" }),
+  });
+  check(
+    "non-member cannot post to the lobby",
+    writeAsOutsider.status === 403,
+    `got ${writeAsOutsider.status}`,
+  );
+
+  const readAnonymous = await api(`/api/groups/${group.id}/messages`, null);
+  check(
+    "signed-out cannot read the lobby",
+    readAnonymous.status === 401,
+    `got ${readAnonymous.status}`,
+  );
 
   // --- Join, then handles appear ----------------------------------------
   const outsiderJoin = await api(`/api/groups/${group.id}/join`, outsider.cookie, {
@@ -178,6 +208,25 @@ async function main() {
 
   const asMember = await (await api(`/api/groups/${group.id}`, outsider.cookie)).text();
   check("member now sees the host's handle", asMember.includes(`${TAG}_adult`));
+  check("member now sees the host's Quest name", asMember.includes(`${TAG}q_adult`));
+
+  const postMessage = await api(`/api/groups/${group.id}/messages`, outsider.cookie, {
+    method: "POST",
+    body: JSON.stringify({ body: `${TAG} north spawn first` }),
+  });
+  check("member can post to the lobby", postMessage.status === 201, `got ${postMessage.status}`);
+
+  const lobby = await (await api(`/api/groups/${group.id}/messages`, adult.cookie)).json();
+  check(
+    "squadmate reads the message back",
+    lobby.messages?.some((m: { body: string }) => m.body === `${TAG} north spawn first`),
+  );
+
+  const tooLong = await api(`/api/groups/${group.id}/messages`, outsider.cookie, {
+    method: "POST",
+    body: JSON.stringify({ body: "x".repeat(400) }),
+  });
+  check("over-long message is rejected", tooLong.status === 400, `got ${tooLong.status}`);
 
   // --- Capacity ----------------------------------------------------------
   const fourth = await makeUser("fourth", 22);

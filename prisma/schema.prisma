@@ -30,6 +30,11 @@ model User {
   /// Discord username, shown to squadmates so they can actually connect.
   discordName String?
 
+  /// Meta/Quest username, for squadmates who want to add each other in-headset
+  /// rather than on Discord. Optional, and shown under the same rule as
+  /// discordName: squad members only.
+  questName String?
+
   /// Birth DATE, never an age integer — see src/lib/age.ts for why.
   /// Never leaves the server: no API response includes this field.
   birthDate DateTime?
@@ -46,6 +51,7 @@ model User {
 
   hostedGroups   Group[]       @relation("GroupHost")
   memberships    GroupMember[]
+  messages       Message[]
   reportsMade    Report[]      @relation("Reporter")
   reportsAgainst Report[]      @relation("ReportTarget")
 }
@@ -124,12 +130,29 @@ model Group {
   /// cron job is needed — see GROUP_TTL_MINUTES.
   expiresAt DateTime
 
-  members GroupMember[]
-  reports Report[]
+  members  GroupMember[]
+  messages Message[]
+  reports  Report[]
 
   // The board query filters on exactly this pair on every poll.
   @@index([status, expiresAt])
   @@index([hostId])
+}
+
+/// Squad lobby chat. Readable and writable by squad members only, and it dies
+/// with the squad — these are 60-minute rooms for planning a raid, not history.
+model Message {
+  id      String @id @default(cuid())
+  groupId String
+  userId  String
+  body    String
+
+  createdAt DateTime @default(now())
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([groupId, createdAt])
 }
 
 model GroupMember {

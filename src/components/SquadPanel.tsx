@@ -7,7 +7,9 @@ import useSWR from "swr";
 import { signIn } from "next-auth/react";
 import { mapName, platformName, regionName, skillName } from "@/lib/game-data";
 import type { GroupDTO } from "@/lib/types";
+import { MicCheck } from "./MicCheck";
 import { SlotPips } from "./SlotPips";
+import { SquadChat } from "./SquadChat";
 import { TimeLeft } from "./TimeLeft";
 
 const fetcher = async (url: string) => {
@@ -83,6 +85,7 @@ export function SquadPanel({
   }
 
   return (
+    <div className="space-y-6">
     <div className="border border-line bg-panel/30">
       {/* Identity */}
       <div className="border-b border-line px-5 py-5">
@@ -148,10 +151,22 @@ export function SquadPanel({
             {member.role === "HOST" && <span className="tag-sm text-bone-faint">Host</span>}
             {member.id === viewerId && <span className="tag-sm text-bone-faint">You</span>}
 
-            <span className="ml-auto flex items-center gap-3">
+            <span className="ml-auto flex flex-wrap items-center gap-2 sm:gap-3">
               {"discordName" in member && member.discordName ? (
-                <code className="tag border border-line-bright px-2 py-1 text-bone">
+                <code
+                  className="tag border border-line-bright px-2 py-1 text-bone"
+                  title="Discord username"
+                >
                   @{member.discordName}
+                </code>
+              ) : null}
+
+              {"questName" in member && member.questName ? (
+                <code
+                  className="tag border border-line-bright px-2 py-1 text-bone-dim"
+                  title="Meta / Quest username"
+                >
+                  <span className="text-bone-faint">Quest</span> {member.questName}
                 </code>
               ) : null}
 
@@ -176,7 +191,7 @@ export function SquadPanel({
 
       {!group.isMember && (
         <p className="border-b border-line bg-panel px-5 py-3 text-[13px] text-bone-dim">
-          Join the squad to see everyone&apos;s Discord.
+          Join the squad to see everyone&apos;s Discord and Quest names, and to use the lobby.
         </p>
       )}
 
@@ -234,6 +249,13 @@ export function SquadPanel({
           Back to the board
         </Link>
       </div>
+    </div>
+
+      {/* Members only — the endpoint enforces this too, this just hides the box. */}
+      {group.isMember && <SquadChat groupId={group.id} viewerId={viewerId} />}
+
+      {/* Surfaced where it matters: this squad said a mic is required. */}
+      {group.micRequired && <MicCheck />}
     </div>
   );
 }

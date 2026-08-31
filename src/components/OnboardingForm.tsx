@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { saveOnboarding, type OnboardingState } from "@/app/onboarding/actions";
 import { MIN_SIGNUP_AGE } from "@/lib/age";
-import { PLATFORMS, REGIONS, SKILLS } from "@/lib/game-data";
+import { PLATFORMS, QUEST_NAME_MAX_LENGTH, REGIONS, SKILLS } from "@/lib/game-data";
 
 const initialState: OnboardingState = { error: null };
 
@@ -82,6 +82,23 @@ export function OnboardingForm() {
             </select>
           </label>
         </div>
+
+        <label className="block">
+          <span className="tag-sm text-bone-faint">Quest username — optional</span>
+          <input
+            type="text"
+            name="questName"
+            maxLength={QUEST_NAME_MAX_LENGTH}
+            autoComplete="off"
+            spellCheck={false}
+            placeholder="yourname"
+            className="mt-1.5 block h-[38px] w-full max-w-[280px] border border-line-bright bg-void px-2.5 text-[14px] text-bone placeholder:text-bone-faint focus:border-bone-dim"
+          />
+          <span className="mt-2 block max-w-[58ch] text-[12.5px] leading-relaxed text-bone-faint">
+            For squadmates who would rather add you in-headset than on Discord. Shown to
+            your squad only, exactly like your Discord name. Leave it blank to skip.
+          </span>
+        </label>
 
         <label className="flex w-fit cursor-pointer items-center gap-2.5 border border-line-bright px-3 py-2 text-[13px] text-bone-dim transition-colors hover:border-bone-dim">
           <input type="checkbox" name="hasMic" defaultChecked className="accent-signal" />

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { GroupStatus } from "@/generated/prisma/client";
+import { MicCheck } from "@/components/MicCheck";
 import { ProfileForm } from "@/components/ProfileForm";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -75,7 +76,10 @@ export default async function ProfilePage() {
           platform={record.platform ?? PLATFORMS[0]}
           defaultSkill={record.defaultSkill ?? SKILLS[0]}
           hasMic={record.hasMic}
+          questName={record.questName ?? ""}
         />
+
+        <MicCheck />
 
         {/* Active squads */}
         <section className="border border-line bg-panel/40">

@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { saveProfile, type ProfileState } from "@/app/profile/actions";
-import { PLATFORMS, REGIONS, SKILLS } from "@/lib/game-data";
+import { PLATFORMS, QUEST_NAME_MAX_LENGTH, REGIONS, SKILLS } from "@/lib/game-data";
 
 const initialState: ProfileState = { error: null, saved: false };
 
@@ -14,11 +14,13 @@ export function ProfileForm({
   platform,
   defaultSkill,
   hasMic,
+  questName,
 }: {
   region: string;
   platform: string;
   defaultSkill: string;
   hasMic: boolean;
+  questName: string;
 }) {
   const [state, formAction, pending] = useActionState(saveProfile, initialState);
 
@@ -64,6 +66,23 @@ export function ProfileForm({
             </select>
           </label>
         </div>
+
+        <label className="block">
+          <span className="tag-sm text-bone-faint">Quest username — optional</span>
+          <input
+            type="text"
+            name="questName"
+            defaultValue={questName}
+            maxLength={QUEST_NAME_MAX_LENGTH}
+            autoComplete="off"
+            spellCheck={false}
+            placeholder="yourname"
+            className="mt-1.5 block h-[38px] w-full max-w-[280px] border border-line-bright bg-void px-2.5 text-[14px] text-bone placeholder:text-bone-faint focus:border-bone-dim"
+          />
+          <span className="mt-2 block max-w-[58ch] text-[12.5px] leading-relaxed text-bone-faint">
+            Shown to your squad only, alongside your Discord name. Clear it to stop sharing.
+          </span>
+        </label>
 
         <label className="flex w-fit cursor-pointer items-center gap-2.5 border border-line-bright px-3 py-2 text-[13px] text-bone-dim transition-colors hover:border-bone-dim">
           <input type="checkbox" name="hasMic" defaultChecked={hasMic} className="accent-signal" />

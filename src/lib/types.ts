@@ -16,6 +16,17 @@ export type MemberDTO = {
    * the key is absent from the payload entirely — not blank, not hidden in CSS.
    */
   discordName?: string | null;
+  /** Same rule as discordName: squad members only. */
+  questName?: string | null;
+};
+
+export type MessageDTO = {
+  id: string;
+  body: string;
+  createdAt: string;
+  authorId: string;
+  authorName: string | null;
+  authorImage: string | null;
 };
 
 export type GroupDTO = {

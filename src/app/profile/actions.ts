@@ -19,6 +19,7 @@ export async function saveProfile(
     platform: formData.get("platform") ?? "",
     defaultSkill: formData.get("defaultSkill") ?? "",
     hasMic: formData.get("hasMic") === "on",
+    questName: (formData.get("questName") as string | null) ?? undefined,
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Check the form", saved: false };
@@ -31,6 +32,7 @@ export async function saveProfile(
       platform: parsed.data.platform,
       defaultSkill: parsed.data.defaultSkill,
       hasMic: parsed.data.hasMic,
+      questName: parsed.data.questName,
     },
   });
 

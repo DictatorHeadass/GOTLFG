@@ -2,10 +2,12 @@ import { z } from "zod";
 import {
   ANY,
   MAP_IDS,
+  MESSAGE_MAX_LENGTH,
   MODES,
   NOTE_MAX_LENGTH,
   PARTY_SIZES,
   PLATFORMS,
+  QUEST_NAME_MAX_LENGTH,
   REGION_IDS,
   SKILLS,
   AGE_GATES,
@@ -49,12 +51,30 @@ export const createGroupSchema = z.object({
 
 export type CreateGroupInput = z.infer<typeof createGroupSchema>;
 
+/** Optional. Empty string and "not set" both normalise to null. */
+const questNameField = z
+  .string()
+  .trim()
+  .max(QUEST_NAME_MAX_LENGTH, `Keep it under ${QUEST_NAME_MAX_LENGTH} characters`)
+  .regex(/^[a-zA-Z0-9._-]*$/, "Letters, numbers, dots, underscores and hyphens only")
+  .optional()
+  .transform((v) => (v && v.length > 0 ? v : null));
+
 export const onboardingSchema = z.object({
   birthDate: z.string().min(1, "Enter your date of birth"),
   region: oneOf(REGION_IDS as readonly string[], "region"),
   platform: oneOf(PLATFORMS, "platform"),
   defaultSkill: oneOf(SKILLS, "skill level"),
   hasMic: z.coerce.boolean().default(true),
+  questName: questNameField,
+});
+
+export const messageSchema = z.object({
+  body: z
+    .string()
+    .trim()
+    .min(1, "Type something first")
+    .max(MESSAGE_MAX_LENGTH, `Keep it under ${MESSAGE_MAX_LENGTH} characters`),
 });
 
 /** Same fields as onboarding minus the birth date, which is set once. */

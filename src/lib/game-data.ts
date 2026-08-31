@@ -54,6 +54,12 @@ export const GROUP_TTL_MINUTES = 60;
 /** Max length of the free-text note on a group. */
 export const NOTE_MAX_LENGTH = 240;
 
+/** Max length of a lobby chat message. */
+export const MESSAGE_MAX_LENGTH = 300;
+
+/** Meta usernames are short; this is a sanity cap, not a spec. */
+export const QUEST_NAME_MAX_LENGTH = 32;
+
 // ---------------------------------------------------------------------------
 // Lookup helpers — always use these for display, never raw ids.
 // ---------------------------------------------------------------------------

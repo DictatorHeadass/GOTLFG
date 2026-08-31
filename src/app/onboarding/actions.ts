@@ -23,6 +23,7 @@ export async function saveOnboarding(
     // Unchecked boxes are absent from FormData. Read it explicitly, or the
     // schema default quietly turns "no mic" into "has mic".
     hasMic: formData.get("hasMic") === "on",
+    questName: (formData.get("questName") as string | null) ?? undefined,
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check the form" };
 
@@ -45,6 +46,7 @@ export async function saveOnboarding(
       platform: parsed.data.platform,
       defaultSkill: parsed.data.defaultSkill,
       hasMic: parsed.data.hasMic,
+      questName: parsed.data.questName,
       onboardedAt: new Date(),
     },
   });

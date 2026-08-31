@@ -10,7 +10,9 @@ export const GROUP_INCLUDE = {
   members: {
     orderBy: { joinedAt: "asc" },
     include: {
-      user: { select: { id: true, name: true, image: true, discordName: true } },
+      user: {
+      select: { id: true, name: true, image: true, discordName: true, questName: true },
+    },
     },
   },
 } satisfies Prisma.GroupInclude;
@@ -50,8 +52,10 @@ export function serializeGroup(group: GroupWithMembers, viewerId: string | null)
       name: m.user.name,
       image: m.user.image,
       role: m.role,
-      // Spread, so the key is genuinely absent for non-members.
-      ...(isMember ? { discordName: m.user.discordName } : {}),
+      // Spread, so the keys are genuinely absent for non-members.
+      ...(isMember
+        ? { discordName: m.user.discordName, questName: m.user.questName }
+        : {}),
     })),
   };
 }

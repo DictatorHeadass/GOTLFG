@@ -6,6 +6,11 @@ a squad you can see the other members' Discord handles, which is how you actuall
 
 Sign-in is Discord OAuth. The board polls every 5 seconds, so slots fill in front of you.
 
+Squad members also get a **lobby chat** for calling the plan, and can share an optional
+**Quest username** for adding each other in-headset instead of on Discord. There's a
+**mic check** — a live input meter using the browser's microphone — on the profile page and
+on any squad that requires a mic.
+
 ## Stack
 
 Next.js 16 (App Router) · React 19 · Tailwind CSS v4 · Auth.js v5 · Prisma 7 · PostgreSQL
@@ -54,9 +59,13 @@ not break, by attacking the endpoints rather than looking at the UI:
 - an 18+ squad is absent from a 15-year-old's board **and** the join endpoint returns 403
   when called directly with their session cookie
 - a minor cannot host an age gate above their own age
-- a non-member's payload contains no `discordName` key at all — not blank, not hidden in CSS
-- joining makes handles appear
+- a non-member's payload contains no `discordName` or `questName` key at all — not blank,
+  not hidden in CSS
+- a non-member gets 403 from the lobby endpoint in both directions, read and write
+- joining makes handles, Quest names and the lobby appear
 - capacity, `FULL` status, one-open-squad-per-host, host handover on leave, and expiry
+
+25 checks as of now.
 
 It seeds its own users and Auth.js session rows, so it needs no Discord credentials, and it
 deletes everything it created on the way out.
@@ -99,10 +108,19 @@ does guarantee:
 src/lib/game-data.ts     every game constant — edit this when Tabor updates
 src/lib/age.ts           birth-date parsing, age derivation, gate check
 src/lib/groups.ts        board query + the ONLY place a Discord handle reaches the wire
-src/app/api/groups/      REST endpoints (create, join, leave, disband)
+src/app/api/groups/      REST endpoints (create, join, leave, disband, messages)
 src/components/Board.tsx live board, 5s poll
-scripts/verify-gates.ts  the check described above
+src/components/SquadChat.tsx  squad lobby, 3s poll, members only
+src/components/MicCheck.tsx   getUserMedia level meter, nothing stored or sent
+scripts/verify-gates.ts  the checks described above
 ```
+
+### A note on the mic check
+
+It is a mic *test*, not a mic *badge*. Nothing is recorded, uploaded, or saved, and no
+"verified" flag goes on the profile. Passing it proves the browser can hear you on that
+device at that moment — it cannot prove you'll have a working mic in the headset later, so
+storing a badge would repeat exactly the problem the age disclaimer exists to avoid.
 
 ## Deploy
 
