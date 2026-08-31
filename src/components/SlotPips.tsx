@@ -35,7 +35,7 @@ export function SlotPips({ filled, max }: { filled: number; max: number }) {
             <span
               key={i}
               className={[
-                "h-4 w-[7px] transition-colors duration-200",
+                "slot h-4 w-[7px] transition-colors duration-200",
                 isFilled
                   ? "bg-bone shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]"
                   : "border border-line-bright bg-transparent",

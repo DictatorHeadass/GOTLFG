@@ -115,6 +115,31 @@ src/components/MicCheck.tsx   getUserMedia level meter, nothing stored or sent
 scripts/verify-gates.ts  the checks described above
 ```
 
+## Browsing in a headset
+
+The site is built to be used from the Meta Quest Browser, not just from a desktop.
+
+**Comfort mode** enlarges type and grows every interactive target to a 46px minimum, because
+pointing a laser pointer held at arm's length is far coarser than a mouse, and a headset
+panel has much less effective resolution than the monitor this was designed on. It turns
+itself on when the user agent is a headset browser (Quest, Pico, Wolvic) and can be toggled
+by hand from the header — UA sniffing is a guess, so the guess is overridable. The decision
+is made by an inline script before first paint, so the headset never flashes the desktop
+layout and reflows.
+
+**Quick phrases** in the lobby ("On my way", "Need ammo", "Enemy spotted", …) send in one tap.
+Typing mid-raid means a virtual keyboard and a laser pointer, which is miserable; these cover
+the common case without touching it. Edit the list in `src/lib/game-data.ts`.
+
+**The mic meter is driven imperatively** — direct `dataset` writes on only the segments that
+changed, rather than React state. The animation loop runs at display rate, and re-rendering a
+component 90 times a second is precisely what a Quest 2's XR2 cannot afford.
+
+> **Gotcha when testing in-headset:** `getUserMedia` needs a *secure context*. Reaching your
+> dev server from the headset over the LAN (`http://192.168.x.x:3000`) is **not** secure, so
+> the mic check will correctly refuse with "needs a secure page". Everything else works over
+> LAN; the mic check needs the deployed HTTPS site (or a tunnel like `ngrok`).
+
 ### A note on the mic check
 
 It is a mic *test*, not a mic *badge*. Nothing is recorded, uploaded, or saved, and no

@@ -60,6 +60,24 @@ export const MESSAGE_MAX_LENGTH = 300;
 /** Meta usernames are short; this is a sanity cap, not a spec. */
 export const QUEST_NAME_MAX_LENGTH = 32;
 
+/**
+ * One-tap lobby messages.
+ *
+ * Typing in a headset means a virtual keyboard and a laser pointer, which is
+ * miserable mid-raid. These cover the things people actually need to say fast,
+ * so the common case is one tap and no keyboard at all.
+ */
+export const QUICK_PHRASES = [
+  "Ready?",
+  "On my way",
+  "Regroup on me",
+  "Enemy spotted",
+  "Need ammo",
+  "Need meds",
+  "I'm down",
+  "Extracting",
+] as const;
+
 // ---------------------------------------------------------------------------
 // Lookup helpers — always use these for display, never raw ids.
 // ---------------------------------------------------------------------------

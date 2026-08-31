@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
-import { MESSAGE_MAX_LENGTH } from "@/lib/game-data";
+import { MESSAGE_MAX_LENGTH, QUICK_PHRASES } from "@/lib/game-data";
 import type { MessageDTO } from "@/lib/types";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
@@ -47,9 +47,8 @@ export function SquadChat({ groupId, viewerId }: { groupId: string; viewerId: st
     pinnedToBottom.current = log.scrollHeight - log.scrollTop - log.clientHeight < 40;
   }
 
-  async function send(event: React.FormEvent) {
-    event.preventDefault();
-    const body = draft.trim();
+  async function submit(raw: string, fromDraft: boolean) {
+    const body = raw.trim();
     if (!body || sending) return;
 
     setSending(true);
@@ -69,13 +68,18 @@ export function SquadChat({ groupId, viewerId }: { groupId: string; viewerId: st
     }
 
     const created: MessageDTO = await response.json();
-    setDraft("");
+    if (fromDraft) setDraft("");
     pinnedToBottom.current = true;
     await mutate(
       (current) => ({ messages: [...(current?.messages ?? []), created] }),
       { revalidate: false },
     );
     setSending(false);
+  }
+
+  function send(event: React.FormEvent) {
+    event.preventDefault();
+    void submit(draft, true);
   }
 
   const remaining = MESSAGE_MAX_LENGTH - draft.length;
@@ -99,7 +103,7 @@ export function SquadChat({ groupId, viewerId }: { groupId: string; viewerId: st
         ) : (
           <ul className="space-y-1.5">
             {messages.map((message) => (
-              <li key={message.id} className="flex gap-3 text-[13px] leading-snug">
+              <li key={message.id} className="chat-line flex gap-3 text-[13px] leading-snug">
                 <time
                   className="tag-sm shrink-0 pt-[3px] text-bone-faint"
                   dateTime={message.createdAt}
@@ -126,6 +130,21 @@ export function SquadChat({ groupId, viewerId }: { groupId: string; viewerId: st
           {error}
         </p>
       )}
+
+      {/* One tap, no keyboard — the whole point when you're in a headset. */}
+      <div className="flex flex-wrap gap-1.5 border-t border-line px-5 py-3">
+        {QUICK_PHRASES.map((phrase) => (
+          <button
+            key={phrase}
+            type="button"
+            disabled={sending}
+            onClick={() => void submit(phrase, false)}
+            className="tag-sm border border-line-bright px-2.5 py-1.5 text-bone-dim transition-colors hover:border-bone hover:text-bone disabled:opacity-40"
+          >
+            {phrase}
+          </button>
+        ))}
+      </div>
 
       <form onSubmit={send} className="flex items-center gap-2 border-t border-line px-5 py-3">
         <input

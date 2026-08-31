@@ -9,6 +9,12 @@ const SEGMENTS = 16;
 /** Peak level that counts as "this mic is actually picking you up". */
 const SPEAKING_THRESHOLD = 0.16;
 
+function toneFor(index: number): string {
+  if (index >= SEGMENTS - 3) return "signal";
+  if (index >= SEGMENTS - 6) return "amber";
+  return "teal";
+}
+
 /**
  * A mic test, not a mic badge.
  *
@@ -16,16 +22,37 @@ const SPEAKING_THRESHOLD = 0.16;
  * browser can hear you on this device right now — it cannot prove you will have
  * a working mic in the headset later, so recording a "verified" flag would be
  * the same trap as a self-reported age that looks vetted.
+ *
+ * The meter is driven imperatively. React state changes once when the threshold
+ * is first crossed; the per-frame work is a handful of dataset writes on only
+ * the segments that actually changed, which keeps a Quest 2 from dropping
+ * frames while the loop runs.
  */
 export function MicCheck() {
   const [state, setState] = useState<State>("idle");
-  const [level, setLevel] = useState(0);
-  const [peak, setPeak] = useState(0);
+  const [heard, setHeard] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
+  const meterRef = useRef<HTMLDivElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const contextRef = useRef<AudioContext | null>(null);
   const frameRef = useRef<number | null>(null);
+  const litRef = useRef(0);
+
+  const paint = useCallback((lit: number) => {
+    if (lit === litRef.current) return;
+    const segments = meterRef.current?.children;
+    if (!segments) return;
+
+    const from = Math.min(lit, litRef.current);
+    const to = Math.max(lit, litRef.current);
+    for (let i = from; i < to && i < segments.length; i += 1) {
+      const element = segments[i] as HTMLElement;
+      if (i < lit) element.dataset.on = toneFor(i);
+      else delete element.dataset.on;
+    }
+    litRef.current = lit;
+  }, []);
 
   const stop = useCallback(() => {
     if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
@@ -38,16 +65,16 @@ export function MicCheck() {
     contextRef.current?.close().catch(() => {});
     contextRef.current = null;
 
-    setLevel(0);
+    paint(0);
     setState("idle");
-  }, []);
+  }, [paint]);
 
   // Tear down on unmount as well as on Stop.
   useEffect(() => stop, [stop]);
 
   async function start() {
     setMessage(null);
-    setPeak(0);
+    setHeard(false);
 
     if (typeof window === "undefined" || !window.isSecureContext) {
       setState("unavailable");
@@ -76,6 +103,7 @@ export function MicCheck() {
       context.createMediaStreamSource(stream).connect(analyser);
 
       const samples = new Float32Array(analyser.fftSize);
+      let peak = 0;
       setState("listening");
 
       const tick = () => {
@@ -85,10 +113,15 @@ export function MicCheck() {
         for (let i = 0; i < samples.length; i += 1) sum += samples[i] * samples[i];
         const rms = Math.sqrt(sum / samples.length);
 
-        // RMS of speech sits well under 1; scale it into something a meter can show.
-        const next = Math.min(1, rms * 7);
-        setLevel(next);
-        setPeak((previous) => Math.max(previous, next));
+        // RMS of speech sits well under 1; scale it into something a meter shows.
+        const level = Math.min(1, rms * 7);
+        paint(Math.round(level * SEGMENTS));
+
+        // The only state change in the whole loop, and it happens at most once.
+        if (level > peak) {
+          peak = level;
+          if (peak >= SPEAKING_THRESHOLD) setHeard(true);
+        }
 
         frameRef.current = requestAnimationFrame(tick);
       };
@@ -109,8 +142,6 @@ export function MicCheck() {
   }
 
   const listening = state === "listening";
-  const heard = peak >= SPEAKING_THRESHOLD;
-  const litSegments = Math.round(level * SEGMENTS);
 
   return (
     <div className="border border-line bg-panel/40">
@@ -124,33 +155,17 @@ export function MicCheck() {
       <div className="px-5 py-5">
         {/* Same segment language as the squad slots. */}
         <div
+          ref={meterRef}
           className="flex items-end gap-[3px]"
           role="meter"
           aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={Math.round(level * 100)}
+          aria-valuemax={SEGMENTS}
+          aria-valuenow={listening ? litRef.current : 0}
           aria-label="Microphone input level"
         >
-          {Array.from({ length: SEGMENTS }, (_, i) => {
-            const lit = i < litSegments;
-            const hot = i >= SEGMENTS - 3;
-            const loud = i >= SEGMENTS - 6;
-            return (
-              <span
-                key={i}
-                className={[
-                  "h-6 w-[7px] transition-colors duration-75",
-                  lit
-                    ? hot
-                      ? "bg-signal"
-                      : loud
-                        ? "bg-amber"
-                        : "bg-teal"
-                    : "border border-line-bright bg-transparent",
-                ].join(" ")}
-              />
-            );
-          })}
+          {Array.from({ length: SEGMENTS }, (_, i) => (
+            <span key={i} className="meter-segment h-6 w-[7px]" />
+          ))}
         </div>
 
         <div className="mt-4 min-h-[20px]">

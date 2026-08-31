@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ComfortToggle } from "./ComfortToggle";
 import { SignInButton } from "./SignInButton";
 import type { Viewer } from "@/lib/session";
 
@@ -13,7 +14,8 @@ export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
           <span className="tag-sm text-bone-faint">Tabor squad dispatch</span>
         </Link>
 
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-2.5">
+          <ComfortToggle />
           {viewer ? (
             <Link
               href="/profile"

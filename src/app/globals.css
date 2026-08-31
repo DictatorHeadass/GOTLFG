@@ -122,3 +122,135 @@ body {
   scrollbar-width: thin;
   scrollbar-color: var(--color-line-bright) transparent;
 }
+
+/*
+ * Mic meter segments.
+ *
+ * Driven by a data attribute rather than React state: the animation loop runs
+ * at display rate, and re-rendering a component 90 times a second is exactly
+ * what a Quest 2 cannot afford. The loop writes dataset.on; the colours stay
+ * here where the rest of the palette lives.
+ */
+.meter-segment {
+  border: 1px solid var(--color-line-bright);
+  background: transparent;
+}
+
+.meter-segment[data-on="teal"] {
+  background: var(--color-teal);
+  border-color: transparent;
+}
+
+.meter-segment[data-on="amber"] {
+  background: var(--color-amber);
+  border-color: transparent;
+}
+
+.meter-segment[data-on="signal"] {
+  background: var(--color-signal);
+  border-color: transparent;
+}
+
+/* ---------------------------------------------------------------------------
+ * Comfort mode — for browsing inside a Quest headset.
+ *
+ * Auto-enabled when the user agent is the Meta Quest Browser, and toggleable by
+ * hand (detection is not reliable, and the same sizing helps on a TV or for
+ * anyone who just wants bigger targets).
+ *
+ * Two problems to solve, and they are different. Legibility: a headset panel
+ * has far less effective resolution than the monitor this was designed on, so
+ * 10px mono labels stop being readable. Aim: pointing a laser pointer held at
+ * arm's length is far coarser than a mouse, so every target grows to at least
+ * 44px and gaps widen so neighbours are not mis-hit.
+ *
+ * These selectors are [data-comfort] + class (0-2-0), so they beat the Tailwind
+ * utilities (0-1-0) they override without needing !important.
+ * ------------------------------------------------------------------------ */
+
+/* Body copy is set in explicit px throughout, so a font-size on <body> would
+   cascade to nothing. Bump the actual sizes used, which also keeps the type
+   hierarchy intact instead of flattening every element to one size. */
+[data-comfort="on"] .text-\[12\.5px\] {
+  font-size: 14px;
+}
+
+[data-comfort="on"] .text-\[13px\] {
+  font-size: 15px;
+}
+
+[data-comfort="on"] .text-\[14px\] {
+  font-size: 16px;
+}
+
+[data-comfort="on"] .text-\[15px\] {
+  font-size: 17px;
+}
+
+[data-comfort="on"] .tag {
+  font-size: 13px;
+  letter-spacing: 0.1em;
+}
+
+[data-comfort="on"] .tag-sm {
+  font-size: 12px;
+  letter-spacing: 0.11em;
+}
+
+/* Every interactive target clears the 44px minimum. */
+[data-comfort="on"] button,
+[data-comfort="on"] select,
+[data-comfort="on"] summary,
+[data-comfort="on"] input[type="text"],
+[data-comfort="on"] input[type="date"],
+[data-comfort="on"] textarea,
+[data-comfort="on"] a.tag {
+  min-height: 46px;
+  height: auto;
+}
+
+[data-comfort="on"] button,
+[data-comfort="on"] a.tag {
+  padding-inline: 1.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-comfort="on"] select,
+[data-comfort="on"] input[type="text"],
+[data-comfort="on"] input[type="date"] {
+  font-size: 16px;
+  padding-inline: 0.85rem;
+}
+
+[data-comfort="on"] input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+
+/* The board is the thing people scroll most, so its rows get real breathing
+   room rather than just larger text. */
+[data-comfort="on"] article {
+  padding-block: 0.35rem;
+}
+
+/* Slots and the mic meter are read at a glance from a distance — grow them. */
+[data-comfort="on"] .slot,
+[data-comfort="on"] .meter-segment {
+  width: 10px;
+}
+
+[data-comfort="on"] .slot {
+  height: 22px;
+}
+
+[data-comfort="on"] .meter-segment {
+  height: 32px;
+}
+
+/* Chat lines are the densest text on the site. */
+[data-comfort="on"] .chat-line {
+  font-size: 15px;
+  padding-block: 0.2rem;
+}
