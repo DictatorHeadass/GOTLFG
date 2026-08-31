@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+/*
+ * GOT LFG — visual system
+ *
+ * Reference is Czech industrial signage and railway dispatch boards, not the
+ * usual black-and-acid-green shooter UI. Tabor's world is Bohemian: Tabor is a
+ * real town, Matka Miest is Prague's nickname, Chodov is a Prague district.
+ * Cold enamel ground, warm bone text, signal-orange for anything live.
+ */
+@theme {
+  --color-void: #101417;
+  --color-panel: #171d21;
+  --color-panel-2: #1d252a;
+  --color-line: #2c373d;
+  --color-line-bright: #41505a;
+
+  --color-bone: #e7e2d6;
+  --color-bone-dim: #98a3a6;
+  --color-bone-faint: #68727a;
+
+  --color-signal: #e2542c;
+  --color-signal-deep: #7c2c15;
+  --color-amber: #d9a441;
+  --color-teal: #5e9b93;
+
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "Courier New", monospace;
+}
+
+/*
+ * Committed dark-only. A dispatch board rendered in light mode reads as a
+ * spreadsheet, and every screen here is browsed in a dark room or a headset.
+ */
+:root {
+  color-scheme: dark;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-void);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Utility face: every code, count, timer and label on the board. */
+.tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.tag-sm {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Keyboard focus stays visible everywhere; never trade this for tidiness. */
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+  border-radius: 1px;
+}
+
+::selection {
+  background: var(--color-signal-deep);
+  color: var(--color-bone);
+}
+
+/* The board polls every few seconds — the pulse marks it as live, not stale. */
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+.live-dot {
+  animation: pulse-live 2.4s ease-in-out infinite;
+}
+
+/* A slot filling is the one moment the board moves. Make it legible, not flashy. */
+@keyframes slot-fill {
+  0% { transform: scaleY(0.2); opacity: 0; }
+  60% { transform: scaleY(1.15); }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+
+.slot-just-filled {
+  animation: slot-fill 320ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  transform-origin: bottom;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Dark scrollbars — a bright default gutter breaks the enamel surface. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-bright) transparent;
+}

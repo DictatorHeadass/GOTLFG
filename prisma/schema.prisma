@@ -1,0 +1,165 @@
+// Prisma 7: the client is generated to src/generated (not node_modules), and the
+// connection string lives in prisma.config.ts rather than in this datasource block.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Auth.js models. Shapes are dictated by @auth/prisma-adapter — do not rename
+// fields here. Application-specific columns are appended to User below.
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+
+  accounts Account[]
+  sessions Session[]
+
+  // --- GOT LFG profile ---------------------------------------------------
+
+  /// Discord username, shown to squadmates so they can actually connect.
+  discordName String?
+
+  /// Birth DATE, never an age integer — see src/lib/age.ts for why.
+  /// Never leaves the server: no API response includes this field.
+  birthDate DateTime?
+
+  region       String?
+  platform     String?
+  defaultSkill String?
+  hasMic       Boolean @default(true)
+
+  /// Null means the user has signed in but not completed onboarding yet.
+  onboardedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  hostedGroups   Group[]       @relation("GroupHost")
+  memberships    GroupMember[]
+  reportsMade    Report[]      @relation("Reporter")
+  reportsAgainst Report[]      @relation("ReportTarget")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ---------------------------------------------------------------------------
+// The board
+// ---------------------------------------------------------------------------
+
+enum GroupStatus {
+  OPEN
+  FULL
+  CLOSED
+}
+
+enum MemberRole {
+  HOST
+  MEMBER
+}
+
+model Group {
+  id     String @id @default(cuid())
+  hostId String
+  host   User   @relation("GroupHost", fields: [hostId], references: [id], onDelete: Cascade)
+
+  /// Map id from src/lib/game-data.ts, or "any".
+  map         String
+  mode        String
+  skill       String
+  /// Minimum age the host requires: 13, 16 or 18. Enforced server-side on join.
+  minAge      Int         @default(13)
+  maxSize     Int
+  region      String
+  platform    String
+  micRequired Boolean     @default(false)
+  note        String?
+  status      GroupStatus @default(OPEN)
+
+  createdAt DateTime @default(now())
+  /// Groups drop off the board here. Expiry is evaluated lazily on read, so no
+  /// cron job is needed — see GROUP_TTL_MINUTES.
+  expiresAt DateTime
+
+  members GroupMember[]
+  reports Report[]
+
+  // The board query filters on exactly this pair on every poll.
+  @@index([status, expiresAt])
+  @@index([hostId])
+}
+
+model GroupMember {
+  id      String     @id @default(cuid())
+  groupId String
+  userId  String
+  role    MemberRole @default(MEMBER)
+
+  joinedAt DateTime @default(now())
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Double-joins are prevented by the database, not by application logic.
+  @@unique([groupId, userId])
+  @@index([userId])
+}
+
+model Report {
+  id           String  @id @default(cuid())
+  reporterId   String
+  targetUserId String
+  groupId      String?
+  reason       String
+
+  createdAt DateTime @default(now())
+
+  reporter   User   @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  targetUser User   @relation("ReportTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+  group      Group? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+
+  @@index([targetUserId])
+}
