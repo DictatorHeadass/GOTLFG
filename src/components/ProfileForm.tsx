@@ -68,7 +68,7 @@ export function ProfileForm({
         </div>
 
         <label className="block">
-          <span className="tag-sm text-bone-faint">Quest username — optional</span>
+          <span className="tag-sm text-bone-faint">Quest username - optional</span>
           <input
             type="text"
             name="questName"

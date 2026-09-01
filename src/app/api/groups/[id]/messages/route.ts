@@ -14,7 +14,7 @@ const AUTHOR = { select: { id: true, name: true, image: true } };
 
 /**
  * The lobby is squad-only, in both directions. Same rule as the Discord
- * handles: someone who has not joined gets 403, not an empty list — an empty
+ * handles: someone who has not joined gets 403, not an empty list - an empty
  * list would invite a client to render a chat box that silently fails.
  */
 async function membership(groupId: string, userId: string) {

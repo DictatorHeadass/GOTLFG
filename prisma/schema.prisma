@@ -11,7 +11,7 @@ datasource db {
 }
 
 // ---------------------------------------------------------------------------
-// Auth.js models. Shapes are dictated by @auth/prisma-adapter — do not rename
+// Auth.js models. Shapes are dictated by @auth/prisma-adapter - do not rename
 // fields here. Application-specific columns are appended to User below.
 // ---------------------------------------------------------------------------
 
@@ -35,7 +35,7 @@ model User {
   /// discordName: squad members only.
   questName String?
 
-  /// Birth DATE, never an age integer — see src/lib/age.ts for why.
+  /// Birth DATE, never an age integer - see src/lib/age.ts for why.
   /// Never leaves the server: no API response includes this field.
   birthDate DateTime?
 
@@ -127,7 +127,7 @@ model Group {
 
   createdAt DateTime @default(now())
   /// Groups drop off the board here. Expiry is evaluated lazily on read, so no
-  /// cron job is needed — see GROUP_TTL_MINUTES.
+  /// cron job is needed - see GROUP_TTL_MINUTES.
   expiresAt DateTime
 
   members  GroupMember[]
@@ -140,7 +140,7 @@ model Group {
 }
 
 /// Squad lobby chat. Readable and writable by squad members only, and it dies
-/// with the squad — these are 60-minute rooms for planning a raid, not history.
+/// with the squad - these are 60-minute rooms for planning a raid, not history.
 model Message {
   id      String @id @default(cuid())
   groupId String

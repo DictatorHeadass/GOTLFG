@@ -12,7 +12,7 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    // Migrations run over the direct (unpooled) endpoint — DDL and the advisory
+    // Migrations run over the direct (unpooled) endpoint - DDL and the advisory
     // locks Prisma takes do not survive a connection pooler. The app itself uses
     // the pooled DATABASE_URL via the driver adapter in src/lib/prisma.ts.
     url: process.env.DIRECT_URL ?? process.env.DATABASE_URL ?? "",

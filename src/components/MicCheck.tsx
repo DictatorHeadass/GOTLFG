@@ -19,7 +19,7 @@ function toneFor(index: number): string {
  * A mic test, not a mic badge.
  *
  * Nothing here is stored or shown to anyone else. Passing this proves the
- * browser can hear you on this device right now — it cannot prove you will have
+ * browser can hear you on this device right now - it cannot prove you will have
  * a working mic in the headset later, so recording a "verified" flag would be
  * the same trap as a self-reported age that looks vetted.
  *
@@ -78,7 +78,7 @@ export function MicCheck() {
 
     if (typeof window === "undefined" || !window.isSecureContext) {
       setState("unavailable");
-      setMessage("Microphone access needs a secure page — https, or localhost.");
+      setMessage("Microphone access needs a secure page - https, or localhost.");
       return;
     }
     if (!navigator.mediaDevices?.getUserMedia) {
@@ -171,7 +171,7 @@ export function MicCheck() {
         <div className="mt-4 min-h-[20px]">
           {listening && heard && (
             <p className="text-[13px] text-teal" role="status">
-              Your mic is working — the site can hear you.
+              Your mic is working - the site can hear you.
             </p>
           )}
           {listening && !heard && (

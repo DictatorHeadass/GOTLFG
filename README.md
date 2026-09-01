@@ -1,14 +1,14 @@
 # GOT LFG
 
-A group finder for **Ghosts of Tabor**. Players post a squad — map, mode, skill, region,
-squad size, age gate — and everyone else browses a live board and clicks Join. Once you're in
+A group finder for **Ghosts of Tabor**. Players post a squad - map, mode, skill, region,
+squad size, age gate - and everyone else browses a live board and clicks Join. Once you're in
 a squad you can see the other members' Discord handles, which is how you actually connect.
 
 Sign-in is Discord OAuth. The board polls every 5 seconds, so slots fill in front of you.
 
 Squad members also get a **lobby chat** for calling the plan, and can share an optional
 **Quest username** for adding each other in-headset instead of on Discord. There's a
-**mic check** — a live input meter using the browser's microphone — on the profile page and
+**mic check** - a live input meter using the browser's microphone - on the profile page and
 on any squad that requires a mic.
 
 ## Stack
@@ -59,7 +59,7 @@ not break, by attacking the endpoints rather than looking at the UI:
 - an 18+ squad is absent from a 15-year-old's board **and** the join endpoint returns 403
   when called directly with their session cookie
 - a minor cannot host an age gate above their own age
-- a non-member's payload contains no `discordName` or `questName` key at all — not blank,
+- a non-member's payload contains no `discordName` or `questName` key at all - not blank,
   not hidden in CSS
 - a non-member gets 403 from the lobby endpoint in both directions, read and write
 - joining makes handles, Quest names and the lobby appear
@@ -70,8 +70,8 @@ not break, by attacking the endpoints rather than looking at the UI:
 It seeds its own users and Auth.js session rows, so it needs no Discord credentials, and it
 deletes everything it created on the way out.
 
-The parts it can't cover — the Discord sign-in round trip and the live 5-second board update
-— need two real accounts:
+The parts it can't cover - the Discord sign-in round trip and the live 5-second board update
+- need two real accounts:
 
 1. Sign in, complete onboarding, post a squad.
 2. In a private window, sign in as a second Discord account and join it.
@@ -84,14 +84,14 @@ Every map, mode, skill, region, age gate and squad size lives in
 [`src/lib/game-data.ts`](src/lib/game-data.ts). Adding a map is one line there; nothing else
 hardcodes a map name.
 
-The five maps currently listed — Island of Tabor, Matka Miest, Matka Miest Underground, Silo,
-Chodov Mall — are the ones confirmable from the wikis. **Check this list against the live
+The five maps currently listed - Island of Tabor, Matka Miest, Matka Miest Underground, Silo,
+Chodov Mall - are the ones confirmable from the wikis. **Check this list against the live
 game and correct it.**
 
 ## How the age gate works
 
 It is **self-reported**. Discord OAuth says nothing about how old anyone is, so an 18+ squad
-is a preference filter, not a vetted space — the footer says so on every page. What the code
+is a preference filter, not a vetted space - the footer says so on every page. What the code
 does guarantee:
 
 - Birth **dates** are stored, never an age integer, so nobody silently ages into a gate they
@@ -105,7 +105,7 @@ does guarantee:
 ## Layout
 
 ```
-src/lib/game-data.ts     every game constant — edit this when Tabor updates
+src/lib/game-data.ts     every game constant - edit this when Tabor updates
 src/lib/age.ts           birth-date parsing, age derivation, gate check
 src/lib/groups.ts        board query + the ONLY place a Discord handle reaches the wire
 src/app/api/groups/      REST endpoints (create, join, leave, disband, messages)
@@ -123,7 +123,7 @@ The site is built to be used from the Meta Quest Browser, not just from a deskto
 pointing a laser pointer held at arm's length is far coarser than a mouse, and a headset
 panel has much less effective resolution than the monitor this was designed on. It turns
 itself on when the user agent is a headset browser (Quest, Pico, Wolvic) and can be toggled
-by hand from the header — UA sniffing is a guess, so the guess is overridable. The decision
+by hand from the header - UA sniffing is a guess, so the guess is overridable. The decision
 is made by an inline script before first paint, so the headset never flashes the desktop
 layout and reflows.
 
@@ -131,7 +131,7 @@ layout and reflows.
 Typing mid-raid means a virtual keyboard and a laser pointer, which is miserable; these cover
 the common case without touching it. Edit the list in `src/lib/game-data.ts`.
 
-**The mic meter is driven imperatively** — direct `dataset` writes on only the segments that
+**The mic meter is driven imperatively** - direct `dataset` writes on only the segments that
 changed, rather than React state. The animation loop runs at display rate, and re-rendering a
 component 90 times a second is precisely what a Quest 2's XR2 cannot afford.
 
@@ -144,7 +144,7 @@ component 90 times a second is precisely what a Quest 2's XR2 cannot afford.
 
 It is a mic *test*, not a mic *badge*. Nothing is recorded, uploaded, or saved, and no
 "verified" flag goes on the profile. Passing it proves the browser can hear you on that
-device at that moment — it cannot prove you'll have a working mic in the headset later, so
+device at that moment - it cannot prove you'll have a working mic in the headset later, so
 storing a badge would repeat exactly the problem the age disclaimer exists to avoid.
 
 ## Deploy

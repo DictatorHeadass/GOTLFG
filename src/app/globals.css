@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * GOT LFG — visual system
+ * GOT LFG - visual system
  *
  * Reference is Czech industrial signage and railway dispatch boards, not the
  * usual black-and-acid-green shooter UI. Tabor's world is Bohemian: Tabor is a
@@ -85,7 +85,7 @@ body {
   color: var(--color-bone);
 }
 
-/* The board polls every few seconds — the pulse marks it as live, not stale. */
+/* The board polls every few seconds - the pulse marks it as live, not stale. */
 @keyframes pulse-live {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.25; }
@@ -117,7 +117,7 @@ body {
   }
 }
 
-/* Dark scrollbars — a bright default gutter breaks the enamel surface. */
+/* Dark scrollbars - a bright default gutter breaks the enamel surface. */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--color-line-bright) transparent;
@@ -152,7 +152,7 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
- * Comfort mode — for browsing inside a Quest headset.
+ * Comfort mode - for browsing inside a Quest headset.
  *
  * Auto-enabled when the user agent is the Meta Quest Browser, and toggleable by
  * hand (detection is not reliable, and the same sizing helps on a TV or for
@@ -235,7 +235,7 @@ body {
   padding-block: 0.35rem;
 }
 
-/* Slots and the mic meter are read at a glance from a distance — grow them. */
+/* Slots and the mic meter are read at a glance from a distance - grow them. */
 [data-comfort="on"] .slot,
 [data-comfort="on"] .meter-segment {
   width: 10px;

@@ -9,7 +9,7 @@ export type Viewer = {
   onboarded: boolean;
 };
 
-/** The signed-in user, or null. Safe to expose — carries no birth date. */
+/** The signed-in user, or null. Safe to expose - carries no birth date. */
 export async function getViewer(): Promise<Viewer | null> {
   const session = await auth();
   if (!session?.user?.id) return null;
@@ -23,7 +23,7 @@ export async function getViewer(): Promise<Viewer | null> {
 }
 
 /**
- * Full user row including birthDate. Server-only — never hand the result
+ * Full user row including birthDate. Server-only - never hand the result
  * straight to a client component or an API response body.
  */
 export async function getViewerRecord() {

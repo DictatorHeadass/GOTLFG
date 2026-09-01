@@ -2,7 +2,7 @@
  * Wire types shared by server and client.
  *
  * Kept separate from lib/groups.ts because the generated Prisma client touches
- * node:process and node:path — importing it from a client component breaks the
+ * node:process and node:path - importing it from a client component breaks the
  * build. Client components import from here only.
  */
 
@@ -13,7 +13,7 @@ export type MemberDTO = {
   role: "HOST" | "MEMBER";
   /**
    * Present ONLY when the viewer is a member of this squad. When they are not,
-   * the key is absent from the payload entirely — not blank, not hidden in CSS.
+   * the key is absent from the payload entirely - not blank, not hidden in CSS.
    */
   discordName?: string | null;
   /** Same rule as discordName: squad members only. */

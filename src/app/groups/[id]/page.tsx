@@ -13,10 +13,10 @@ type Props = { params: Promise<{ id: string }> };
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const group = await getLiveGroup(id);
-  if (!group) return { title: "Squad not found — GOT LFG" };
+  if (!group) return { title: "Squad not found - GOT LFG" };
 
   return {
-    title: `${mapName(group.map)} ${group.mode} squad — GOT LFG`,
+    title: `${mapName(group.map)} ${group.mode} squad - GOT LFG`,
     description: `${group.members.length}/${group.maxSize} slots filled. ${group.minAge}+, ${group.skill}.`,
   };
 }

@@ -14,7 +14,7 @@ function clock(iso: string): string {
 /**
  * Squad lobby. Rendered only for members; the endpoint enforces that too.
  *
- * Polled rather than socketed — the same reason as the board. A raid gets
+ * Polled rather than socketed - the same reason as the board. A raid gets
  * planned in a handful of messages over a few minutes, and 3 seconds of latency
  * is invisible at that pace.
  */
@@ -131,7 +131,7 @@ export function SquadChat({ groupId, viewerId }: { groupId: string; viewerId: st
         </p>
       )}
 
-      {/* One tap, no keyboard — the whole point when you're in a headset. */}
+      {/* One tap, no keyboard - the whole point when you're in a headset. */}
       <div className="flex flex-wrap gap-1.5 border-t border-line px-5 py-3">
         {QUICK_PHRASES.map((phrase) => (
           <button

@@ -1,7 +1,7 @@
 /**
  * Single source of truth for Ghosts of Tabor game data.
  *
- * When the game ships a new map or renames one, edit THIS FILE ONLY — every
+ * When the game ships a new map or renames one, edit THIS FILE ONLY - every
  * form, filter and card reads from here. Nothing else hardcodes a map name.
  */
 
@@ -39,7 +39,7 @@ export const REGIONS = [
 
 export type RegionId = (typeof REGIONS)[number]["id"];
 
-/** Minimum age a host can require. 13 is the floor — under-13 cannot sign up at all. */
+/** Minimum age a host can require. 13 is the floor - under-13 cannot sign up at all. */
 export const AGE_GATES = [13, 16, 18] as const;
 export type AgeGate = (typeof AGE_GATES)[number];
 
@@ -79,7 +79,7 @@ export const QUICK_PHRASES = [
 ] as const;
 
 // ---------------------------------------------------------------------------
-// Lookup helpers — always use these for display, never raw ids.
+// Lookup helpers - always use these for display, never raw ids.
 // ---------------------------------------------------------------------------
 
 export const MAP_IDS: readonly string[] = MAPS.map((m) => m.id);

@@ -57,7 +57,7 @@ export function Board({
       return;
     }
 
-    // Straight to the squad page — the Discord handles are the whole point.
+    // Straight to the squad page - the Discord handles are the whole point.
     router.push(`/groups/${id}`);
   }
 

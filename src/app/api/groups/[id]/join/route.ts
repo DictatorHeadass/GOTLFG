@@ -30,7 +30,7 @@ export async function POST(_request: Request, { params }: Ctx) {
   }
 
   // THE age gate. The board hides squads a user is too young for, but a hidden
-  // card is still one curl away — this is the check that actually holds.
+  // card is still one curl away - this is the check that actually holds.
   if (!meetsAgeGate(record.birthDate, group.minAge)) {
     return jsonError(403, `This squad is ${group.minAge}+`);
   }

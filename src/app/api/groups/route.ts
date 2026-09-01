@@ -37,7 +37,7 @@ export async function POST(request: Request) {
   if (!parsed.success) return jsonError(400, firstIssue(parsed.error));
   const input = parsed.data;
 
-  // A host cannot gate a squad above their own age — otherwise a 15-year-old
+  // A host cannot gate a squad above their own age - otherwise a 15-year-old
   // posts an 18+ squad and is the one person in it who fails the door check.
   const hostAge = getAge(record.birthDate);
   if (input.minAge > hostAge) {
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       micRequired: input.micRequired,
       note: input.note,
       expiresAt: new Date(Date.now() + GROUP_TTL_MINUTES * 60_000),
-      // The host occupies the first slot — a 0/4 squad with a host in it is a lie.
+      // The host occupies the first slot - a 0/4 squad with a host in it is a lie.
       members: { create: { userId: record.id, role: "HOST" } },
     },
     include: GROUP_INCLUDE,

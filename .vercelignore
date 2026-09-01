@@ -1,5 +1,5 @@
 # A leading "!" means negation in ignore-file syntax, and this directory really
-# is named "!DiscordBot" — so the backslash escape is required to exclude it
+# is named "!DiscordBot" - so the backslash escape is required to exclude it
 # rather than accidentally force-include it.
 \!DiscordBot/
 

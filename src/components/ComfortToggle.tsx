@@ -10,7 +10,7 @@ export const COMFORT_KEY = "got-lfg-comfort";
  * The initial value is decided by the inline script in the root layout, before
  * first paint, so the headset never flashes the desktop layout first. This
  * component only reads what that script already decided and lets it be changed
- * — user-agent sniffing is a guess, so the guess has to be overridable.
+ * - user-agent sniffing is a guess, so the guess has to be overridable.
  */
 export function ComfortToggle() {
   const [on, setOn] = useState(false);

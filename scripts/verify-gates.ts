@@ -4,7 +4,7 @@
  *
  * It does not need Discord. Auth.js database sessions are just rows, so this
  * seeds users and session tokens directly and then talks to the running server
- * over HTTP with those cookies — the same path a browser takes, including every
+ * over HTTP with those cookies - the same path a browser takes, including every
  * server-side check. That is the point: filtering a card out of the board is
  * cosmetic, and the only way to prove the gate holds is to attack the endpoint.
  *
@@ -40,7 +40,7 @@ function check(name: string, ok: boolean, detail = "") {
     console.log(`  PASS  ${name}`);
   } else {
     failed += 1;
-    console.log(`  FAIL  ${name}${detail ? ` — ${detail}` : ""}`);
+    console.log(`  FAIL  ${name}${detail ? ` - ${detail}` : ""}`);
   }
 }
 

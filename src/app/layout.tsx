@@ -26,7 +26,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GOT LFG — Ghosts of Tabor squad finder",
+  title: "GOT LFG - Ghosts of Tabor squad finder",
   description:
     "Find a Ghosts of Tabor squad by map, mode, skill and age gate. Post a squad, fill the slots, swap Discord.",
 };

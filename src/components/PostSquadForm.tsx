@@ -163,7 +163,7 @@ export function PostSquadForm({
       </div>
 
       <div className="mt-4">
-        <Field label={`Note — optional (${NOTE_MAX_LENGTH - note.length} left)`}>
+        <Field label={`Note - optional (${NOTE_MAX_LENGTH - note.length} left)`}>
           <input
             type="text"
             name="note"

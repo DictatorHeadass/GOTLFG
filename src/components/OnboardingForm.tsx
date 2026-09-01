@@ -34,7 +34,7 @@ export function OnboardingForm() {
           />
           <span className="mt-2 block max-w-[58ch] text-[12.5px] leading-relaxed text-bone-faint">
             This sets which age-gated squads you can join. It is never shown to anyone else
-            — other players only ever see the gate a squad requires, never your age. You
+            - other players only ever see the gate a squad requires, never your age. You
             must be at least {MIN_SIGNUP_AGE}.
           </span>
         </label>
@@ -84,7 +84,7 @@ export function OnboardingForm() {
         </div>
 
         <label className="block">
-          <span className="tag-sm text-bone-faint">Quest username — optional</span>
+          <span className="tag-sm text-bone-faint">Quest username - optional</span>
           <input
             type="text"
             name="questName"

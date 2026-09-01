@@ -31,7 +31,7 @@ export async function saveOnboarding(
   if (!birthDate) return { error: "That date of birth doesn't look right" };
 
   // COPPA: no accounts for under-13s. OAuth already created a User row, so
-  // refusing the form is not enough — the row goes too. Sessions, accounts and
+  // refusing the form is not enough - the row goes too. Sessions, accounts and
   // memberships cascade with it.
   if (!isOldEnoughToSignUp(birthDate)) {
     await prisma.user.delete({ where: { id: session.user.id } });

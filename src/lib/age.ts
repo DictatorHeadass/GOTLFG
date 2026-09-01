@@ -2,7 +2,7 @@
  * Age handling.
  *
  * We store a birth DATE and derive age on every read. Storing an age integer at
- * signup would silently rot — a 17-year-old stays 17 in the database forever and
+ * signup would silently rot - a 17-year-old stays 17 in the database forever and
  * quietly ages into 18+ groups they were never re-checked for.
  *
  * None of this is verified. Discord OAuth tells us nothing about how old someone

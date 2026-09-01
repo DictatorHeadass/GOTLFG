@@ -177,7 +177,7 @@ export function SquadPanel({
           </li>
         ))}
 
-        {/* Empty slots are shown, not implied — the roster is the product. */}
+        {/* Empty slots are shown, not implied - the roster is the product. */}
         {Array.from({ length: emptySlots }, (_, i) => (
           <li
             key={`empty-${i}`}
@@ -251,7 +251,7 @@ export function SquadPanel({
       </div>
     </div>
 
-      {/* Members only — the endpoint enforces this too, this just hides the box. */}
+      {/* Members only - the endpoint enforces this too, this just hides the box. */}
       {group.isMember && <SquadChat groupId={group.id} viewerId={viewerId} />}
 
       {/* Surfaced where it matters: this squad said a mic is required. */}

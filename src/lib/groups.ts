@@ -11,8 +11,8 @@ export const GROUP_INCLUDE = {
     orderBy: { joinedAt: "asc" },
     include: {
       user: {
-      select: { id: true, name: true, image: true, discordName: true, questName: true },
-    },
+        select: { id: true, name: true, image: true, discordName: true, questName: true },
+      },
     },
   },
 } satisfies Prisma.GroupInclude;
@@ -23,7 +23,7 @@ export type GroupWithMembers = Prisma.GroupGetPayload<{ include: typeof GROUP_IN
  * The single place a Discord handle is allowed onto the wire.
  *
  * Every route that returns a group goes through here. If you find yourself
- * building a group response by hand somewhere else, don't — you will leak the
+ * building a group response by hand somewhere else, don't - you will leak the
  * handles of people who did not agree to share them with that viewer.
  */
 export function serializeGroup(group: GroupWithMembers, viewerId: string | null): GroupDTO {
@@ -65,7 +65,7 @@ export function serializeGroup(group: GroupWithMembers, viewerId: string | null)
  *
  * `viewerAge` null means signed-out: the board is public, so they see
  * everything and are asked to sign in before joining. A signed-in user only
- * ever sees groups they are actually old enough to join — showing a minor an
+ * ever sees groups they are actually old enough to join - showing a minor an
  * 18+ squad they will be refused at the door helps nobody.
  */
 export function buildBoardWhere(
@@ -78,7 +78,7 @@ export function buildBoardWhere(
   if (filters.adultOnly) and.push({ minAge: 18 });
 
   // A host who will run "any" map matches every specific map filter, and the
-  // same for skill and platform. Region is always concrete — ping is not a
+  // same for skill and platform. Region is always concrete - ping is not a
   // preference.
   if (filters.maps.length) and.push({ map: { in: [...filters.maps, ANY] } });
   if (filters.regions.length) and.push({ region: { in: filters.regions } });
@@ -111,7 +111,7 @@ export async function getBoard(filters: BoardFilters, viewer: { id: string; age:
   return groups.map((g) => serializeGroup(g, viewer?.id ?? null));
 }
 
-/** Header counters. Deliberately unfiltered — this is the state of the whole board. */
+/** Header counters. Deliberately unfiltered - this is the state of the whole board. */
 export async function getBoardStats() {
   const live = await prisma.group.findMany({
     where: { expiresAt: { gt: new Date() }, status: { in: [GroupStatus.OPEN, GroupStatus.FULL] } },
