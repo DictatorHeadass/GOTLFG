@@ -10,13 +10,13 @@ export const LEGAL = {
   siteUrl: "https://gotlfg.vercel.app",
 
   /** Where data-protection requests and abuse reports go. Required. */
-  contactEmail: "",
+  contactEmail: "wanderworldsmc@gmail.com",
 
   /**
    * The country (and state/province, if relevant) whose law governs the terms
    * and whose courts hear disputes. Normally where the operator lives.
    */
-  jurisdiction: "",
+  jurisdiction: "United States of America",
 
   /** Shown at the top of both documents. Bump it whenever you change them. */
   lastUpdated: "3 September 2026",
