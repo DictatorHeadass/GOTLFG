@@ -12,6 +12,11 @@ export type MemberDTO = {
   image: string | null;
   role: "HOST" | "MEMBER";
   /**
+   * Passed the mic check during their current sign-in. Not sensitive and
+   * useful to everyone browsing, so unlike the handles this is always present.
+   */
+  micVerified: boolean;
+  /**
    * Present ONLY when the viewer is a member of this squad. When they are not,
    * the key is absent from the payload entirely - not blank, not hidden in CSS.
    */

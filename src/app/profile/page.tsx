@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { GroupStatus } from "@/generated/prisma/client";
+import { DeleteAccount } from "@/components/DeleteAccount";
 import { MicCheck } from "@/components/MicCheck";
 import { ProfileForm } from "@/components/ProfileForm";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -79,7 +80,12 @@ export default async function ProfilePage() {
           questName={record.questName ?? ""}
         />
 
-        <MicCheck />
+        <div id="mic" className="scroll-mt-6">
+          <MicCheck
+            initialVerified={viewer.micVerified}
+            initialMethod={record.micVerifiedMethod}
+          />
+        </div>
 
         {/* Active squads */}
         <section className="border border-line bg-panel/40">
@@ -119,6 +125,8 @@ export default async function ProfilePage() {
             </ul>
           )}
         </section>
+
+        <DeleteAccount />
       </main>
 
       <SiteFooter />

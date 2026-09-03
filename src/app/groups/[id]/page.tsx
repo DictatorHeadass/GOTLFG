@@ -4,7 +4,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { mapName } from "@/lib/game-data";
 import { getLiveGroup, serializeGroup } from "@/lib/groups";
-import { getViewer } from "@/lib/session";
+import { getViewer, getViewerRecord } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
@@ -24,8 +24,11 @@ export async function generateMetadata({ params }: Props) {
 export default async function GroupPage({ params }: Props) {
   const { id } = await params;
 
-  const viewer = await getViewer();
-  const group = await getLiveGroup(id);
+  const [viewer, record, group] = await Promise.all([
+    getViewer(),
+    getViewerRecord(),
+    getLiveGroup(id),
+  ]);
   if (!group) notFound();
 
   return (
@@ -36,6 +39,8 @@ export default async function GroupPage({ params }: Props) {
           initial={serializeGroup(group, viewer?.id ?? null)}
           signedIn={viewer !== null}
           viewerId={viewer?.id ?? null}
+          micVerified={viewer?.micVerified ?? false}
+          micMethod={record?.micVerifiedMethod ?? null}
         />
       </main>
       <SiteFooter />

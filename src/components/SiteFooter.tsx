@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function SiteFooter() {
   return (
     <footer className="mt-10 border-t border-line">
@@ -8,8 +10,22 @@ export function SiteFooter() {
           finding people you want to play with - not a vetted space. Use your judgement, and
           report anyone who makes the board worse.
         </p>
+
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <Link href="/privacy" className="tag-sm text-bone-faint transition-colors hover:text-bone">
+            Privacy
+          </Link>
+          <span aria-hidden="true" className="text-line-bright">
+            /
+          </span>
+          <Link href="/terms" className="tag-sm text-bone-faint transition-colors hover:text-bone">
+            Terms
+          </Link>
+        </div>
+
         <p className="tag-sm mt-4 text-bone-faint">
-          Fan project. Not affiliated with Combat Waffle Studios or Beyond Frames Entertainment.
+          Fan project. Not affiliated with Combat Waffle Studios, Beyond Frames
+          Entertainment, Meta or Discord.
         </p>
       </div>
     </footer>

@@ -274,6 +274,65 @@ async function main() {
     !afterExpiry.groups?.some((g: { id: string }) => g.id === group.id),
   );
 
+  // --- Mic verification --------------------------------------------------
+  check(
+    "member payload always carries micVerified",
+    /"micVerified":(true|false)/.test(asMember),
+  );
+
+  const micAnon = await api("/api/mic-verify", null, {
+    method: "POST",
+    body: JSON.stringify({ method: "utterance", phrasesPassed: 3 }),
+  });
+  check("mic verify rejects signed-out", micAnon.status === 401, `got ${micAnon.status}`);
+
+  const micShort = await api("/api/mic-verify", fourth.cookie, {
+    method: "POST",
+    body: JSON.stringify({ method: "utterance", phrasesPassed: 1 }),
+  });
+  check(
+    "mic verify rejects an unfinished run",
+    micShort.status === 400,
+    `got ${micShort.status}`,
+  );
+
+  const micBad = await api("/api/mic-verify", fourth.cookie, {
+    method: "POST",
+    body: JSON.stringify({ method: "telepathy", phrasesPassed: 3 }),
+  });
+  check("mic verify rejects an unknown method", micBad.status === 400, `got ${micBad.status}`);
+
+  const micOk = await api("/api/mic-verify", fourth.cookie, {
+    method: "POST",
+    body: JSON.stringify({ method: "utterance", phrasesPassed: 3 }),
+  });
+  check("mic verify accepts a full run", micOk.ok, `got ${micOk.status}`);
+
+  const micRow = await prisma.user.findUnique({
+    where: { id: fourth.user.id },
+    select: { micVerifiedAt: true, micVerifiedSession: true, micVerifiedMethod: true },
+  });
+  check("mic verification is stored against the session", micRow?.micVerifiedSession != null);
+  check("mic method is recorded", micRow?.micVerifiedMethod === "utterance");
+
+  // --- Account deletion (right to erasure) --------------------------------
+  const deleteAnon = await api("/api/account", null, { method: "DELETE" });
+  check(
+    "account deletion rejects signed-out",
+    deleteAnon.status === 401,
+    `got ${deleteAnon.status}`,
+  );
+
+  const doomed = await makeUser("doomed", 28);
+  const deleted = await api("/api/account", doomed.cookie, { method: "DELETE" });
+  check("account deletion succeeds", deleted.ok, `got ${deleted.status}`);
+
+  const gone = await prisma.user.findUnique({ where: { id: doomed.user.id } });
+  check("deleted user row is actually gone", gone === null);
+
+  const sessionsGone = await prisma.session.count({ where: { userId: doomed.user.id } });
+  check("deleted user's sessions cascade away", sessionsGone === 0);
+
   await cleanup();
 
   console.log(`\n${passed} passed, ${failed} failed\n`);

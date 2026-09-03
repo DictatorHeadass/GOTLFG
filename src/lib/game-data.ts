@@ -78,6 +78,22 @@ export const QUICK_PHRASES = [
   "Extracting",
 ] as const;
 
+/**
+ * Phrases for the mic check.
+ *
+ * Chosen to be short, in-world, unambiguous to a speech recogniser, and free of
+ * homophones that trip word matching. Each is long enough that a cough or a
+ * door slam will not pass the local fallback by accident.
+ */
+export const MIC_PHRASES = [
+  "Comms check, one two",
+  "Radio check, over",
+  "Squad up, moving out",
+] as const;
+
+/** How many of the phrase words must be recognised for a phrase to pass. */
+export const PHRASE_MATCH_RATIO = 0.6;
+
 // ---------------------------------------------------------------------------
 // Lookup helpers - always use these for display, never raw ids.
 // ---------------------------------------------------------------------------

@@ -7,6 +7,10 @@ declare module "next-auth" {
       /** False until the user has set a birth date and profile defaults. */
       onboarded: boolean;
       discordName: string | null;
+      /** Hash of this session's token; scopes the mic badge to one sign-in. */
+      sessionKey: string | null;
+      /** True only when the mic check was passed during THIS session. */
+      micVerified: boolean;
     } & DefaultSession["user"];
   }
 
@@ -14,6 +18,7 @@ declare module "next-auth" {
     discordName?: string | null;
     onboardedAt?: Date | null;
     birthDate?: Date | null;
+    micVerifiedSession?: string | null;
   }
 }
 
@@ -22,5 +27,6 @@ declare module "next-auth/adapters" {
     discordName?: string | null;
     onboardedAt?: Date | null;
     birthDate?: Date | null;
+    micVerifiedSession?: string | null;
   }
 }

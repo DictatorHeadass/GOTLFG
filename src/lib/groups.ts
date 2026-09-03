@@ -11,7 +11,14 @@ export const GROUP_INCLUDE = {
     orderBy: { joinedAt: "asc" },
     include: {
       user: {
-        select: { id: true, name: true, image: true, discordName: true, questName: true },
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          discordName: true,
+          questName: true,
+          micVerifiedAt: true,
+        },
       },
     },
   },
@@ -52,6 +59,9 @@ export function serializeGroup(group: GroupWithMembers, viewerId: string | null)
       name: m.user.name,
       image: m.user.image,
       role: m.role,
+      // Cleared on every sign-in, so a non-null value means "verified during
+      // their current session" without needing to know their session token.
+      micVerified: m.user.micVerifiedAt !== null,
       // Spread, so the keys are genuinely absent for non-members.
       ...(isMember
         ? { discordName: m.user.discordName, questName: m.user.questName }

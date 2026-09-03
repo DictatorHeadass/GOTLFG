@@ -47,6 +47,16 @@ model User {
   /// Null means the user has signed in but not completed onboarding yet.
   onboardedAt DateTime?
 
+  /// Mic check state. Deliberately per-session: the badge means "tested during
+  /// this sign-in", not "owns a working mic forever". micVerifiedSession holds
+  /// a hash of the session token, so a new sign-in requires a fresh check.
+  micVerifiedAt      DateTime?
+  micVerifiedSession String?
+  /// "speech" when the words were actually recognised, "utterance" when only
+  /// speech-like audio was detected. Recorded so the badge can be honest about
+  /// which check was passed.
+  micVerifiedMethod  String?
+
   createdAt DateTime @default(now())
 
   hostedGroups   Group[]       @relation("GroupHost")

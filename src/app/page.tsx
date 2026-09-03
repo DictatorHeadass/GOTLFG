@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { Board } from "@/components/Board";
+import { MicSessionPrompt } from "@/components/MicSessionPrompt";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import type { PostDefaults } from "@/components/PostSquadForm";
@@ -55,6 +56,8 @@ export default async function HomePage({ searchParams }: { searchParams: SearchP
           Post a squad, fill the slots, swap Discord. Filter the board by map, mode, skill,
           region and age gate.
         </p>
+
+        {viewer?.onboarded && !viewer.micVerified && <MicSessionPrompt />}
 
         <Suspense
           fallback={

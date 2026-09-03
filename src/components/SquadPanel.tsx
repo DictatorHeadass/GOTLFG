@@ -7,7 +7,7 @@ import useSWR from "swr";
 import { signIn } from "next-auth/react";
 import { mapName, platformName, regionName, skillName } from "@/lib/game-data";
 import type { GroupDTO } from "@/lib/types";
-import { MicCheck } from "./MicCheck";
+import { MicBadge, MicCheck } from "./MicCheck";
 import { SlotPips } from "./SlotPips";
 import { SquadChat } from "./SquadChat";
 import { TimeLeft } from "./TimeLeft";
@@ -27,10 +27,14 @@ export function SquadPanel({
   initial,
   signedIn,
   viewerId,
+  micVerified = false,
+  micMethod = null,
 }: {
   initial: GroupDTO;
   signedIn: boolean;
   viewerId: string | null;
+  micVerified?: boolean;
+  micMethod?: string | null;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -148,6 +152,8 @@ export function SquadPanel({
 
             <span className="text-[14px] text-bone">{member.name ?? "Operator"}</span>
 
+            {member.micVerified && <MicBadge />}
+
             {member.role === "HOST" && <span className="tag-sm text-bone-faint">Host</span>}
             {member.id === viewerId && <span className="tag-sm text-bone-faint">You</span>}
 
@@ -255,7 +261,9 @@ export function SquadPanel({
       {group.isMember && <SquadChat groupId={group.id} viewerId={viewerId} />}
 
       {/* Surfaced where it matters: this squad said a mic is required. */}
-      {group.micRequired && <MicCheck />}
+      {group.micRequired && signedIn && (
+        <MicCheck initialVerified={micVerified} initialMethod={micMethod} />
+      )}
     </div>
   );
 }
