@@ -16,7 +16,7 @@ export const LEGAL = {
    * The country (and state/province, if relevant) whose law governs the terms
    * and whose courts hear disputes. Normally where the operator lives.
    */
-  jurisdiction: "United States of America",
+  jurisdiction: "the State of Ohio, United States",
 
   /** Shown at the top of both documents. Bump it whenever you change them. */
   lastUpdated: "3 September 2026",
